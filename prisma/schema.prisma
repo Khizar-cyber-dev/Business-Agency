@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  password  String
+  role      Role      @default(CLIENT)
+  createdAt DateTime  @default(now())
+  updated   DateTime  @updatedAt
+  services  Service[]
+  portfolios Portfolio[]
+}
+
+model Service {
+  id            String      @id @default(uuid())
+  title         String      @unique
+  slug          String?      @unique
+  description   String
+  price         String?
+  isActive      Boolean     @default(true)
+  userId        String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  inquiries     Inquiry[]
+  portfolios    Portfolio[]
+  user          User        @relation(fields: [userId], references: [id])
+}
+
+model Portfolio {
+  id          String    @id @default(uuid())
+  title       String
+  image       String
+  description String
+  serviceId   String
+  userId      String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  slug        String?   @unique
+  inquiries   Inquiry[]
+  links       Link[]
+  service     Service   @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id])
+}
+
+model Link {
+  id          String    @id @default(uuid())
+  url         String
+  title       String?
+  type        String?
+  portfolioId String
+  createdAt   DateTime  @default(now())
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@index([portfolioId])
+}
+
+model Inquiry {
+  id          String        @id @default(uuid())
+  name        String
+  email       String
+  message     String
+  budget      String?
+  status      InquiryStatus @default(NEW)
+  serviceId   String
+  portfolioId String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  portfolio   Portfolio?    @relation(fields: [portfolioId], references: [id])
+  service     Service       @relation(fields: [serviceId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  CLIENT
+}
+
+enum InquiryStatus {
+  NEW
+  CONTACTED
+  IN_PROGRESS
+  CLOSED
+}
