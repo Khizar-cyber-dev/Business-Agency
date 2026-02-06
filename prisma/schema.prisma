@@ -8,15 +8,20 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  name      String
-  email     String    @unique
-  password  String
-  role      Role      @default(CLIENT)
-  createdAt DateTime  @default(now())
-  updated   DateTime  @updatedAt
-  services  Service[]
-  portfolios Portfolio[]
+  id              String    @id @default(uuid())
+  clerkId         String?   @unique
+  name            String?
+  email           String    @unique
+  password        String?
+  businessName    String?
+  businessEmail   String?
+  experience      String?
+  joinReason      String?
+  role            Role      @default(CLIENT)
+  createdAt       DateTime  @default(now())
+  updated         DateTime  @updatedAt
+  services        Service[]
+  portfolios      Portfolio[]
 }
 
 model Service {

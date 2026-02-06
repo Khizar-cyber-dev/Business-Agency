@@ -1,7 +1,10 @@
+import CardsSection from "../components/CardsSection";
+import Header from "../components/Header";
+
 export default function Page() {
     return (
         <main>
-            <h1 className="text-center">Admin Page</h1>
+            <CardsSection />
         </main>
     );
 }
