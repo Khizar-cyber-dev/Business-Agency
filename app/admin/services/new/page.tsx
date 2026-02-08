@@ -108,10 +108,6 @@ export default function CreateServicePage() {
             </button>
           </div>
         </form>
-
-        <p className="text-center text-gray-500 text-sm mt-6">
-          * Required fields
-        </p>
       </div>
     </main>
   );

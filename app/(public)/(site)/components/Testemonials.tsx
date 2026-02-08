@@ -53,7 +53,7 @@ const Testemonials = () => {
   ]
 
   return (
-    <section className='w-full mx-auto py-20 md:py-24'>
+    <section className='w-full mx-auto py-20 md:py-24 relative z-10'>
       <div className='text-center'>
         <h1 className='text-3xl md:text-4xl font-bold tracking-tight text-gray-900'>
           What{' '}

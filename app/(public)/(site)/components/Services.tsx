@@ -3,7 +3,7 @@ import { getPublicServices } from '@/lib/action'
 import { ArrowBigRight, Briefcase, Layers, MessageCircle } from 'lucide-react'
 
 const Services = async () => {
-  const services = await getPublicServices()
+  const services = await getPublicServices(3);
 
   return (
     <section className="relative w-full bg-white py-20 md:py-24">

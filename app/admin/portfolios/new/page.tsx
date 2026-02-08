@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Loader, Plus, X } from "lucide-react";
-import { createPortfolio, getServicesForSelect } from "@/lib/action";
+import { createPortfolio, getPublicServices } from "@/lib/action";
 
 interface Service {
   id: string;
@@ -33,7 +33,7 @@ export default function Page() {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const servicesData = await getServicesForSelect();
+        const servicesData = await getPublicServices(0);
         setServices(servicesData);
       } catch (error) {
         console.error("Error fetching services:", error);

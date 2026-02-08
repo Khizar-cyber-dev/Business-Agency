@@ -1,4 +1,6 @@
 import prisma from '@/lib/prismaDB';
+import Link from 'next/link';
+import { ArrowRight, Briefcase, Sparkles } from 'lucide-react';
 import { notFound } from 'next/navigation';
 
 interface ServicePageProps {
@@ -26,108 +28,86 @@ export default async function ServicePage({ params }: ServicePageProps) {
     }
 
     return (
-        <main className="min-h-screen bg-[#050505] text-white">
-            {/* Hero Section */}
-            <section className="relative pt-32 pb-20 px-6 overflow-hidden">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-blue-600/20 to-transparent blur-[120px] pointer-events-none" />
-
-                <div className="max-w-7xl mx-auto relative z-10">
-                    <div className="flex flex-col items-center text-center space-y-6">
-                        <span className="px-4 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-sm font-medium tracking-wide uppercase animate-fade-in">
-                            Our Expertise
-                        </span>
-                        <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-gradient-to-r from-white via-white to-white/50 bg-clip-text text-transparent">
+        <div className='min-h-screen relative z-10'>
+            <section>
+                <div className='mx-auto w-full max-w-6xl px-6 pt-24 pb-12'>
+                    <div className='flex flex-col items-center text-center'>
+                        <div className='mb-4 inline-flex items-center gap-2 rounded-full border border-blue-100 bg-white px-3 py-1 text-xs font-medium text-blue-700 shadow-sm'>
+                            <Sparkles className='h-3.5 w-3.5' />
+                            <span>Service Overview</span>
+                        </div>
+                        <h1 className='text-4xl font-semibold tracking-tight text-gray-900 md:text-5xl'>
                             {service.title}
                         </h1>
-                        <p className="max-w-2xl text-lg md:text-xl text-gray-400 leading-relaxed">
+                        <p className='mt-4 max-w-2xl text-base text-gray-600 md:text-lg'>
                             {service.description}
                         </p>
-                        {service.price && (
-                            <div className="text-2xl font-semibold text-blue-400">
-                                Starting from <span className="text-white">{service.price}</span>
-                            </div>
-                        )}
 
-                        <div className="pt-10">
-                            <button className="px-10 py-4 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.3)]">
-                                Start a Project
-                            </button>
+                        <div className='mt-6 flex flex-wrap items-center justify-center gap-3 text-sm text-gray-600'>
+                            <span className='inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1'>
+                                <Briefcase className='h-4 w-4 text-blue-600' />
+                                {service.portfolios.length} portfolio{service.portfolios.length === 1 ? '' : 's'}
+                            </span>
+                            <span className='inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1'>
+                                Starting from <span className='font-semibold text-gray-900'>{service.price || 'Custom pricing'}</span>
+                            </span>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Portfolios Section */}
-            <section className="py-24 px-6 bg-[#0a0a0a]">
-                <div className="max-w-7xl mx-auto">
-                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-                        <div className="space-y-4">
-                            <h2 className="text-3xl md:text-5xl font-bold">Showcase</h2>
-                            <p className="text-gray-500 text-lg">Selected works related to {service.title.toLowerCase()}.</p>
-                        </div>
+            <section className='mx-auto w-full max-w-6xl px-6 pb-16'>
+                <div className='flex items-end justify-between gap-4'>
+                    <div>
+                        <h2 className='text-2xl font-semibold text-gray-900'>Featured Portfolios</h2>
+                        <p className='mt-1 text-sm text-gray-600'>
+                            Pick a portfolio to explore past work and start a conversation.
+                        </p>
                     </div>
+                </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        {service.portfolios.length > 0 ? (
-                            service.portfolios.map((item) => (
-                                <div key={item.id} className="group relative overflow-hidden rounded-3xl bg-[#111] border border-white/5 hover:border-white/20 transition-all">
-                                    <div className="aspect-[16/10] overflow-hidden">
+               <div className='mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
+                    {service.portfolios.length === 0 ? (
+                        <p className='col-span-full text-center text-gray-500'>No portfolios available for this service.</p>
+                    ) : (
+                        service.portfolios.map(portfolio => {
+                            const imageSrc = portfolio.image?.startsWith('data:')
+                                ? portfolio.image
+                                : `data:image/png;base64,${portfolio.image}`;
+                            return (
+                            <Link
+                                key={portfolio.id}
+                                href={`/portfolio/${portfolio.slug}`}
+                                className='group flex flex-col justify-between rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10'
+                            >
+                                <div className='space-y-4'>
+                                    <div className='relative h-44 w-full overflow-hidden rounded-xl bg-gray-100'>
                                         <img
-                                            src={item.image}
-                                            alt={item.title}
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                            src={imageSrc}
+                                            alt={portfolio.title}
+                                            className='h-full w-full object-cover'
+                                            loading='lazy'
                                         />
                                     </div>
-                                    <div className="p-8 space-y-4">
-                                        <h3 className="text-2xl font-bold">{item.title}</h3>
-                                        <p className="text-gray-400 line-clamp-2">{item.description}</p>
-
-                                        <div className="flex flex-wrap gap-4 pt-4">
-                                            {item.links.map((link) => (
-                                                <a
-                                                    key={link.id}
-                                                    href={link.url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm font-medium hover:bg-white/10 transition-colors"
-                                                >
-                                                    {link.title || 'View Link'}
-                                                </a>
-                                            ))}
-                                        </div>
-                                    </div>
+                                    <h3 className='text-lg font-semibold text-gray-900 group-hover:text-blue-700'>
+                                        {portfolio.title}
+                                    </h3>
+                                    <p className='line-clamp-3 text-sm text-gray-600'>
+                                        {portfolio.description}
+                                    </p>
                                 </div>
-                            ))
-                        ) : (
-                            <div className="col-span-full py-20 text-center border border-dashed border-white/10 rounded-3xl">
-                                <p className="text-gray-500 italic">No portfolios available for this service yet.</p>
-                            </div>
-                        )}
-                    </div>
-                </div>
+                                <div className='mt-6 flex items-center justify-between text-sm text-gray-600'>
+                                    <span className='inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1'>
+                                        <Briefcase className='h-4 w-4 text-blue-600' />
+                                        {portfolio.links.length} link{portfolio.links.length === 1 ? '' : 's'}
+                                    </span>
+                                    <ArrowRight className='h-4 w-4 text-gray-400' />
+                                </div>
+                            </Link>
+                        )})
+                    )}
+               </div>
             </section>
-
-            {/* Inquiry CTA */}
-            <section className="py-24 px-6">
-                <div className="max-w-4xl mx-auto rounded-[40px] p-12 md:p-20 bg-gradient-to-br from-blue-600 to-blue-800 text-center space-y-8 relative overflow-hidden shadow-2xl shadow-blue-500/20">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[100px] -mr-32 -mt-32 rounded-full" />
-                    <div className="relative z-10 space-y-6">
-                        <h2 className="text-4xl md:text-6xl font-bold tracking-tight">Ready to transform your business?</h2>
-                        <p className="text-xl text-blue-100 max-w-xl mx-auto">
-                            Tell us about your project and let&apos;s build something extraordinary together.
-                        </p>
-                        <div className="pt-6">
-                            <button className="px-12 py-5 bg-white text-blue-600 font-bold text-lg rounded-2xl hover:bg-blue-50 transition-colors">
-                                Get Free Estimate
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <footer className="py-12 border-t border-white/5 text-center text-gray-600 text-sm">
-                &copy; {new Date().getFullYear()} Business Agency. All rights reserved.
-            </footer>
-        </main>
+        </div>
     );
 }

@@ -1,3 +1,4 @@
+import { createInquiry } from "@/lib/action";
 import prisma from "@/lib/prismaDB";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
@@ -44,31 +45,41 @@ export async function GET() {
     }
 }
 
-
-
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
     try {
-        const body = await req.json();
-        const { name, email, message, budget, serviceId, portfolioId } = body;
+        const body = await request.json();
+        const { slug, ...formData } = body;
 
-        if (!name || !email || !message || !budget || !serviceId || !portfolioId) {
-            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-        }
-
-        const inquiry = await prisma.inquiry.create({
-            data: {
-                name,
-                email,
-                message,
-                budget,
-                status: "NEW",
-                serviceId,
-                portfolioId,
-            },
+        const portfolio = await prisma.portfolio.findUnique({
+            where: { slug },
+            select: { id: true, service: { select: { id: true } } },
         });
 
-        return NextResponse.json(inquiry, { status: 201 });
-    } catch (e: any) {
-        return NextResponse.json({ error: e.message }, { status: 500 });
+        if (!portfolio) {
+            return NextResponse.json(
+                { error: 'Portfolio not found' },
+                { status: 404 }
+            );
+        }
+
+        const inquiryData = {
+            ...formData,
+            portfolioId: portfolio.id,
+            serviceId: portfolio.service?.id || null,
+        };
+
+        await createInquiry(inquiryData);
+        
+        return NextResponse.json({
+            success: true,
+            message: 'Inquiry submitted successfully!'
+        });
+        
+    } catch (error) {
+        console.error('API Error:', error);
+        return NextResponse.json(
+            { error: 'Internal server error' },
+            { status: 500 }
+        );
     }
 }

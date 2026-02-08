@@ -59,7 +59,7 @@ export default async function PortfoliosPage() {
             <h3 className="text-xl font-semibold text-gray-700 mb-2">No portfolios yet</h3>
             <p className="text-gray-500 mb-6">Add your first portfolio project to showcase your work</p>
             <Link
-              href="/admin/portfolio/new"
+              href="/admin/portfolios/new"
               className="inline-block bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 px-8 rounded-lg font-semibold hover:opacity-90"
             >
               Create First Project

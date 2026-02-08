@@ -8,11 +8,16 @@ import {
   FileText, 
   Briefcase, 
   MessageSquare, 
-  Settings,
-  LogOut
+  LogOut,
+  X
 } from 'lucide-react'
 
-const Sidebar = () => {
+type SidebarProps = {
+  onNavigate?: () => void
+  showMobileClose?: boolean
+}
+
+const Sidebar = ({ onNavigate, showMobileClose = false }: SidebarProps) => {
   const pathname = usePathname()
 
   const navItems = [
@@ -44,8 +49,25 @@ const Sidebar = () => {
 
   return (
     <div className='flex flex-col h-full p-6'>
+      {showMobileClose && (
+        <div className='mb-6 flex items-center justify-between md:hidden'>
+          <div>
+            <h1 className='text-xl font-bold text-white'>Admin</h1>
+            <p className='text-amber-100 text-xs'>Business Agency</p>
+          </div>
+          <button
+            type='button'
+            onClick={onNavigate}
+            className='inline-flex items-center justify-center rounded-md bg-white/10 p-2 text-white hover:bg-white/20 transition-colors'
+            aria-label='Close sidebar'
+          >
+            <X size={18} />
+          </button>
+        </div>
+      )}
+
       {/* Logo/Brand */}
-      <div className='mb-8'>
+      <div className={`mb-8 ${showMobileClose ? 'hidden md:block' : ''}`}>
         <h1 className='text-2xl font-bold text-white'>Admin</h1>
         <p className='text-amber-100 text-sm'>Business Agency</p>
       </div>
@@ -60,6 +82,7 @@ const Sidebar = () => {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavigate}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                 active
                   ? 'bg-white text-amber-600 font-semibold shadow-lg'
@@ -75,7 +98,11 @@ const Sidebar = () => {
 
       {/* Logout Button */}
       <div className='border-t border-amber-600 pt-4'>
-        <button className='flex items-center gap-3 w-full px-4 py-3 rounded-lg text-white hover:bg-amber-600 transition-all duration-200'>
+        <button
+          type='button'
+          onClick={onNavigate}
+          className='flex items-center gap-3 w-full px-4 py-3 rounded-lg text-white hover:bg-amber-600 transition-all duration-200'
+        >
           <LogOut size={20} />
           <span>Logout</span>
         </button>

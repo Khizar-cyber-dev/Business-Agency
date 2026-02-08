@@ -31,6 +31,15 @@ interface portfolioData {
   }>;
 }
 
+interface InquiryStatus {
+  name: string;
+  email: string;
+  message: string;
+  budget: string;
+  portfolioId: string;
+  serviceId: string;
+}
+
 export async function getCurrentUserFromDB(){
   try {
     const { userId } = await auth();
@@ -53,7 +62,7 @@ export async function getCurrentUserFromDB(){
     return user;
   } catch (error) {
     console.log("Error in getting the user from db:", error);
-    throw new Error('Error in getting the user from db');
+    return { success: false, error: "Failed to get User from Database" };
   }
 }
 
@@ -71,7 +80,7 @@ export async function storeFormDataInRedis(formData: FormData) {
     return { success: true, message: 'Form data stored successfully' };
   } catch (error) {
     console.error('Error storing form data in Redis:', error);
-    throw error;
+    return { success: false, error: "Failed to store data in Redis" };
   }
 }
 
@@ -89,7 +98,7 @@ export async function getFormDataFromRedis() {
     return data && typeof data === 'string' ? JSON.parse(data) : null;
   } catch (error) {
     console.error('Error retrieving form data from Redis:', error);
-    throw error;
+    return { success: false, error: "Failed to get data from Redis" };
   }
 }
 
@@ -113,7 +122,7 @@ export async function makeAdmin(formData: FormData) {
     return { success: true, message: 'User updated successfully' };
   } catch (error) {
     console.error('Error updating user:', error);
-    throw error;
+    return { success: false, error: "Failed to update user to admin" };
   }
 }
 
@@ -149,7 +158,7 @@ export async function createService(data: serviceData) {
     return newService;
   } catch (error) {
     console.log('Error making user service:', error);
-    throw error;
+    return { success: false, error: "Failed to create service" };
   }
 }
 
@@ -178,7 +187,7 @@ export async function getServices() {
 }
 
 // Public services for the marketing site (no auth required)
-export async function getPublicServices() {
+export async function getPublicServices(num: number) {
   try {
     const services = await prisma.service.findMany({
       where: { isActive: true },
@@ -197,8 +206,11 @@ export async function getPublicServices() {
           }
         }
       },
-      take: 3 // Limit to 3 services for homepage display,
     });
+
+    if (num > 0) {
+      return services.slice(0, num);
+    }
 
     return services;
   } catch (error) {
@@ -245,30 +257,6 @@ export async function deleteService(id: string) {
   } catch (error) {
     console.error("Error deleting service:", error);
     return { success: false, error: "Failed to delete service" };
-  }
-}
-
-export async function getServicesForSelect() {
-  try {
-    const user = await getCurrentUserFromDB();
-    if (!user) throw new Error("User not found");
-
-    const services = await prisma.service.findMany({
-      where: { 
-        userId: user.id,
-        isActive: true 
-      },
-      select: {
-        id: true,
-        title: true,
-      },
-      orderBy: { createdAt: "desc" },
-    });
-
-    return services;
-  } catch (error) {
-    console.error("Error fetching services for select:", error);
-    return [];
   }
 }
 
@@ -352,57 +340,27 @@ export async function updateInquiryStatus(inquiryId: string, status: 'NEW' | 'CO
   }
 }
 
-
-export async function getHomePageData() {
+export async function createInquiry(formData: InquiryStatus) {
   try {
-    const [services, featuredPortfolios] = await Promise.all([
-      // Get active services with their portfolio counts
-      prisma.service.findMany({
-        where: { isActive: true },
-        include: {
-          user: {
-            select: {
-              businessName: true,
-              name: true,
-            }
-          },
-          _count: {
-            select: {
-              portfolios: true,
-            }
-          }
-        },
-        orderBy: { createdAt: 'desc' },
-        take: 6, // Limit to 6 services
-      }),
-      // Get featured portfolios (most recent with images)
-      prisma.portfolio.findMany({
-        where: {
-          service: {
-            isActive: true,
-          }
-        },
-        include: {
-          service: {
-            select: {
-              title: true,
-              slug: true,
-            }
-          },
-          user: {
-            select: {
-              businessName: true,
-            }
-          }
-        },
-        orderBy: { createdAt: 'desc' },
-        take: 6, // Limit to 6 portfolios
-      }),
-    ]);
-
-    return { services, featuredPortfolios };
+    const user = await getCurrentUserFromDB();
+    if (!user) {
+      throw new Error('User not found in database');
+    }
+    const inquiry = await prisma.inquiry.create({
+      data: {
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+        budget: formData.budget,
+        portfolioId: formData.portfolioId,
+        serviceId: formData.serviceId,
+        status: 'NEW',
+      }
+    });
+    revalidatePath("/admin/inquires");
+    return { success: true, inquiry };
   } catch (error) {
-    console.error('Error fetching home page data:', error);
-    return { services: [], featuredPortfolios: [] };
+    console.error("Error creating inquiry:", error);
+    return { success: false, error: "Failed to create inquiry" };
   }
 }

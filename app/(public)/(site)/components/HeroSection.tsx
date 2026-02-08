@@ -1,15 +1,9 @@
-import React from 'react'
 import { ArrowRight, CheckCircle, TrendingUp, Users } from 'lucide-react'
 import Link from 'next/link'
-import Navbar from './Navbar'
 
 const HeroSection = () => {
   return (
-    <section className='relative min-h-[calc(100vh-80px)] w-full overflow-hidden'>
-      <div className='absolute top-0 left-0 w-full z-50'>
-        <Navbar />
-      </div>
-      <div className="absolute top-0 left-0 h-full w-full z-0 bg-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(80,77,188,0.55),rgba(121,134,255,0.26),rgba(255,255,255,0.0))]"></div>
+    <section className='min-h-[calc(100vh-80px)] w-full'>
       <div className='relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32'>
         <div className='grid lg:grid-cols-2 gap-12 items-center'>
           <div className='space-y-8 z-10'>
