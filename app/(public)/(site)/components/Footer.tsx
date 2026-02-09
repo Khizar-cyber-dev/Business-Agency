@@ -9,7 +9,10 @@ const Footer = () => {
         <div className='grid gap-10 md:grid-cols-4'>
           <div className='md:col-span-2'>
             <h3 className='text-2xl font-bold text-gray-900'>
-              BusinessAgency
+              Your {' '}
+              <span className='text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600'>
+                Business
+              </span>
             </h3>
             <p className='mt-3 text-sm text-gray-600 max-w-md'>
               Connect with expert service providers, showcase your portfolio, and

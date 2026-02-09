@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { redirect, useParams } from 'next/navigation';
 
 export default function page() {
     const params = useParams();
@@ -52,6 +52,7 @@ export default function page() {
                     message: '',
                     budget: '',
                 });
+                setTimeout(() => redirect('/'), 2000);
             } else {
                 setError(result.error || 'Something went wrong');
             }

@@ -38,7 +38,7 @@ const Navbar = async () => {
           <div className="flex items-center gap-3">
             <div className="relative h-11 w-11 rounded-2xl bg-white/80 shadow-md shadow-blue-500/10 flex items-center justify-center overflow-hidden">
               <Image
-                src="/logo.avif"
+                src="/logo.png"
                 alt="Main Logo"
                 fill
                 className="object-contain"
@@ -47,7 +47,10 @@ const Navbar = async () => {
             </div>
             <div className="flex flex-col">
               <span className="text-base font-semibold tracking-tight text-gray-900">
-                Business Agency
+                Your {' '}
+                <span className='text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600'>
+                  Business
+                </span>
               </span>
               <span className="text-xs text-gray-500">
                 Connect. Collaborate. Grow.
