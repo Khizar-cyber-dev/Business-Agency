@@ -1,7 +1,6 @@
 import AuthForm from "../components/AuthForm";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { SignInButton } from "@clerk/nextjs";
-import { syncUser } from "@/lib/syncUser";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prismaDB";
 
@@ -9,9 +8,6 @@ export default async function Page() {
     const { userId } = await auth();
 
     const user = await currentUser();
-    if (user) {
-        await syncUser(user);
-    }
     const email = user?.primaryEmailAddress?.emailAddress || user?.emailAddresses?.[0]?.emailAddress;
     if (email) {
         const dbUser = await prisma.user.findUnique({

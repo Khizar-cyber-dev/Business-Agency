@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { LayoutDashboard, Store } from 'lucide-react'
 import { auth, currentUser } from '@clerk/nextjs/server'
 import prisma from '@/lib/prismaDB'
-import { syncUser } from '@/lib/syncUser'
 
 const Navbar = async () => {
   const authSession = await auth()
@@ -13,10 +12,7 @@ const Navbar = async () => {
   let userRole: string | null = null
 
   if (clerkUserId) {
-    const user = await currentUser()
-    if (user) {
-      //await syncUser(user)
-    }
+    const user = await currentUser();
 
     const email =
       user?.primaryEmailAddress?.emailAddress ||
