@@ -15,7 +15,7 @@ const Navbar = async () => {
   if (clerkUserId) {
     const user = await currentUser()
     if (user) {
-      await syncUser(user)
+      //await syncUser(user)
     }
 
     const email =
