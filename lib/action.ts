@@ -105,7 +105,7 @@ export async function getFormDataFromRedis() {
 export async function makeAdmin(formData: FormData) {
   try {
     const user = await getCurrentUserFromDB();
-    if (!user) {
+    if (!user || 'error' in user) {
       throw new Error('User not found in database');
     }
     await prisma.user.update({
@@ -134,7 +134,7 @@ export async function createService(data: serviceData) {
     }
 
     const user = await getCurrentUserFromDB();
-    if (!user) {
+    if (!user || 'error' in user) {
       throw new Error('User not found in database');
     }
     
@@ -165,7 +165,9 @@ export async function createService(data: serviceData) {
 export async function getServices() {
   try {
     const user = await getCurrentUserFromDB();
-    if (!user) throw new Error("User not found");
+    if (!user || 'error' in user) {
+      throw new Error('User not found in database');
+    }
 
     const services = await prisma.service.findMany({
       where: { userId: user.id },
@@ -222,7 +224,9 @@ export async function getPublicServices(num: number) {
 export async function toggleServiceStatus(id: string, isActive: boolean) {
   try {
     const user = await getCurrentUserFromDB();
-    if (!user) throw new Error("Unauthorized");
+    if (!user || 'error' in user) {
+      throw new Error('User not found in database');
+    }
 
     const service = await prisma.service.update({
       where: {
@@ -243,7 +247,9 @@ export async function toggleServiceStatus(id: string, isActive: boolean) {
 export async function deleteService(id: string) {
   try {
     const user = await getCurrentUserFromDB();
-    if (!user) throw new Error("Unauthorized");
+    if (!user || 'error' in user) {
+      throw new Error('User not found in database');
+    }
 
     await prisma.service.delete({
       where: {
@@ -263,7 +269,7 @@ export async function deleteService(id: string) {
 export async function createPortfolio(data: portfolioData) {
   try {
     const user = await getCurrentUserFromDB();
-    if (!user) {
+    if (!user || 'error' in user) {
       throw new Error('User not found in database');
     }
 
@@ -310,7 +316,9 @@ export async function createPortfolio(data: portfolioData) {
 export async function updateInquiryStatus(inquiryId: string, status: 'NEW' | 'CONTACTED' | 'IN_PROGRESS' | 'CLOSED') {
   try {
     const user = await getCurrentUserFromDB();
-    if (!user) throw new Error("Unauthorized");
+    if (!user || 'error' in user) {
+      throw new Error('User not found in database');
+    }
 
     // Verify that the inquiry belongs to a portfolio owned by the current user
     const inquiry = await prisma.inquiry.findFirst({
