@@ -1,6 +1,12 @@
 import { Redis } from '@upstash/redis'
+const redisUrl = process.env.UPSTASH_REDIS_REST_URL
+const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN
+
+if (!redisUrl || !redisToken) {
+  throw new Error('Missing Upstash Redis env vars: UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN')
+}
 
 export const redis = new Redis({
-  url: 'https://fond-serval-37999.upstash.io',
-  token: 'AZRvAAIncDI1MDdmMTM0YjZjZTE0ZDdhYjVjOTFjZTYzNmQ4NjA3NXAyMzc5OTk',
+  url: redisUrl,
+  token: redisToken,
 })

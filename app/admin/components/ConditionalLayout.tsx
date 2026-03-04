@@ -1,9 +1,8 @@
 'use client'
 
-import React, { ReactNode, useState } from 'react'
+import React, { ReactElement, ReactNode, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { Menu } from 'lucide-react'
-import { UserButton } from '@clerk/clerk-react'
 
 export default function ConditionalLayout({
   children,
@@ -22,9 +21,14 @@ export default function ConditionalLayout({
     return <>{children}</>
   }
 
+  type MobileSidebarProps = {
+    onNavigate?: () => void
+    showMobileClose?: boolean
+  }
+
   const closeSidebar = () => setSidebarOpen(false)
   const mobileSidebar = React.isValidElement(sidebar)
-    ? React.cloneElement(sidebar as React.ReactElement<any>, {
+    ? React.cloneElement(sidebar as ReactElement<MobileSidebarProps>, {
         onNavigate: closeSidebar,
         showMobileClose: true,
       })
@@ -84,4 +88,3 @@ export default function ConditionalLayout({
     </div>
   )
 }
-

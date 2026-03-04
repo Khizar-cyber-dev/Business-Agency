@@ -1,9 +1,8 @@
 import prisma from "@/lib/prismaDB";
-import { SignIn } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { Sparkles } from "lucide-react";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const { slug } = await params;

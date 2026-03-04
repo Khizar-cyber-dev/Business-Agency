@@ -113,7 +113,7 @@ export default async function PortfoliosPage() {
                 {/* Actions */}
                 <div className="border-t p-4 flex gap-2">
                   <Link
-                    href={`/admin/portfolio/${portfolio.id}`}
+                    href={`/admin/portfolios/${portfolio.id}`}
                     className="flex-1 text-center py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg font-medium transition"
                   >
                     Edit

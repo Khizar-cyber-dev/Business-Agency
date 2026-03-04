@@ -1,6 +1,5 @@
 "use client";
 
-import useSWR from 'swr'
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader } from "lucide-react";

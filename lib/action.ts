@@ -31,12 +31,12 @@ interface portfolioData {
   }>;
 }
 
-interface InquiryStatus {
+interface InquiryData {
   name: string;
   email: string;
   message: string;
-  budget: string;
-  portfolioId: string;
+  budget?: string;
+  portfolioId?: string | null;
   serviceId: string;
 }
 
@@ -348,12 +348,31 @@ export async function updateInquiryStatus(inquiryId: string, status: 'NEW' | 'CO
   }
 }
 
-export async function createInquiry(formData: InquiryStatus) {
+export async function createInquiry(formData: InquiryData) {
   try {
-    const user = await getCurrentUserFromDB();
-    if (!user) {
-      throw new Error('User not found in database');
+    const service = await prisma.service.findUnique({
+      where: { id: formData.serviceId },
+      select: { id: true },
+    });
+
+    if (!service) {
+      throw new Error("Service not found");
     }
+
+    if (formData.portfolioId) {
+      const portfolio = await prisma.portfolio.findFirst({
+        where: {
+          id: formData.portfolioId,
+          serviceId: formData.serviceId,
+        },
+        select: { id: true },
+      });
+
+      if (!portfolio) {
+        throw new Error("Portfolio does not belong to the selected service");
+      }
+    }
+
     const inquiry = await prisma.inquiry.create({
       data: {
         name: formData.name,

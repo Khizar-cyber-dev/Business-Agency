@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from 'react';
-import { redirect, useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
-export default function page() {
+export default function Page() {
+    const router = useRouter();
     const params = useParams();
     const slug = params.slug as string; 
     
@@ -52,11 +53,11 @@ export default function page() {
                     message: '',
                     budget: '',
                 });
-                setTimeout(() => redirect('/'), 2000);
+                setTimeout(() => router.push('/'), 2000);
             } else {
                 setError(result.error || 'Something went wrong');
             }
-        } catch (err) {
+        } catch {
             setError('Network error. Please try again.');
         } finally {
             setLoading(false);
