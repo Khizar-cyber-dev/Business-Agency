@@ -33,7 +33,6 @@ export default async function CardsSection() {
     where: { clerkId: userId || "" },
   });
 
-  // Then fetch other stats based on user ID
   const [servicesCount, portfoliosCount, newInquiries] = await Promise.all([
     prisma.service.count({
       where: { 
